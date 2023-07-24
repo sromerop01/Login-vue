@@ -14,10 +14,10 @@ const { userData } = useUser
 
     <div class="wrapper">
       <nav v-if="!useUser.loadingSession">
-        <RouterLink to="/" v-if="userData.email">Home</RouterLink>
-        <RouterLink to="/login" v-if="!userData.email">login</RouterLink>
-        <RouterLink to="/register" v-if="!userData.email">Register</RouterLink>
-        <button @click="logoutUser" v-if="userData.email">Logout</button>
+        <RouterLink to="/" v-if="userData">Home</RouterLink>
+        <RouterLink to="/login" v-if="!userData">login</RouterLink>
+        <RouterLink to="/register" v-if="!userData">Register</RouterLink>
+        <button @click="logoutUser" v-if="userData">Logout</button>
       </nav>
       <div v-else>
         Loading User...

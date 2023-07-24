@@ -1,16 +1,17 @@
-import { collection, getDocs, query, where } from "firebase/firestore/lite";
+import { addDoc, collection, getDocs, query, where } from "firebase/firestore/lite";
 import { defineStore } from "pinia";
 import { ref } from "vue";
 import { auth, db } from "../firebaseConfig";
+import { nanoid } from "nanoid";
 
 export const useDatabaseStore = defineStore('database', () =>{
     const documents = ref([])
     const loadingDoc = ref(false)
 
     const getUrls = async () => {
-        // if (documents.value.length !== 0) {
-        //     return
-        // }
+        if (documents.value.length !== 0) {
+            return
+        }
         loadingDoc.value = true
         try {
             const q = query(collection(db, 'urls'), where('user', '==', auth.currentUser.uid))
@@ -28,6 +29,24 @@ export const useDatabaseStore = defineStore('database', () =>{
             loadingDoc.value = false
         }
     }
+    const addUrl = async (name) => {
+        try {
+            const objDoc = {
+                name: name,
+                short: nanoid(6),
+                user: auth.currentUser.uid
+            }
+            const docRef = await addDoc(collection(db, "urls"), objDoc)
+            documents.value.push({
+                ...objDoc,
+                id: docRef.id
+            })
+        } catch (error) {
+            console.log(error);
+        } finally {
+
+        }
+    }
 
     function $reset() {
         documents.value = []
@@ -38,6 +57,7 @@ export const useDatabaseStore = defineStore('database', () =>{
         documents,
         loadingDoc,
         getUrls,
+        addUrl,
         $reset
     }
 })

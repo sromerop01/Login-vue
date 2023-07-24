@@ -2,6 +2,12 @@
     <div>
         <h1>Home</h1>
         <p>{{userData?.email}}</p>
+
+        <form @submit.prevent="handleSubmit">
+            <input type="text" placeholder="Ingrese URL" v-model="url">
+            <button type="submit">Agregar</button>
+        </form>
+
         <p v-if="loadingDoc">loading Doc...</p>
         <ul v-else>
             <li v-for="(item, index) in documents" :key="item.id">
@@ -16,13 +22,20 @@
 import { useUserStore } from '../stores/user'
 import { useDatabaseStore } from "../stores/database"
 import { storeToRefs } from 'pinia';
+import { ref } from 'vue';
 
 const useUser = useUserStore()
 const { userData } = useUser
 const useDB = useDatabaseStore()
 const { documents, loadingDoc } = storeToRefs(useDB)
-const { getUrls } = useDB
+const { getUrls, addUrl } = useDB
 
 getUrls()
+
+const url = ref('')
+const handleSubmit = () => {
+    //Validaciones de la url...
+    addUrl(url.value)
+}
 
 </script>
