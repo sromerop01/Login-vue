@@ -2,7 +2,8 @@
     <div>
         <h1>Home</h1>
         <p>{{userData?.email}}</p>
-        <ul>
+        <p v-if="loadingDoc">loading Doc...</p>
+        <ul v-else>
             <li v-for="(item, index) in documents" :key="item.id">
                 {{ item.name }} - {{ item.id }}
                 {{ item.short }}
@@ -13,11 +14,13 @@
 
 <script setup>
 import { useUserStore } from '../stores/user'
-import { useDatabaseStore } from "../stores/database";
+import { useDatabaseStore } from "../stores/database"
+import { storeToRefs } from 'pinia';
+
 const useUser = useUserStore()
 const { userData } = useUser
 const useDB = useDatabaseStore()
-const { documents } = useDB
+const { documents, loadingDoc } = storeToRefs(useDB)
 const { getUrls } = useDB
 
 getUrls()
