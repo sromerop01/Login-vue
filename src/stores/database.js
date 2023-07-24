@@ -1,8 +1,9 @@
-import { addDoc, collection, deleteDoc, doc, getDoc, getDocs, query, where } from "firebase/firestore/lite";
+import { addDoc, collection, deleteDoc, doc, getDoc, getDocs, query, updateDoc, where } from "firebase/firestore/lite";
 import { defineStore } from "pinia";
 import { ref } from "vue";
 import { auth, db } from "../firebaseConfig";
 import { nanoid } from "nanoid";
+import router from "../router";
 
 export const useDatabaseStore = defineStore('database', () =>{
     const documents = ref([])
@@ -46,6 +47,46 @@ export const useDatabaseStore = defineStore('database', () =>{
 
         }
     }
+    const readUrl = async (id) => {
+        try {
+            const docRef = doc(db, 'urls', id)
+            const docSnap = await getDoc(docRef)
+
+            if (!docSnap.exists()) {
+                throw new Error('No existe el doc')
+            }
+            if(docSnap.data().user !== auth.currentUser.uid){
+                throw new Error('Doc invalido en la secion')
+            }
+
+            return docSnap.data().name
+        } catch (error) {
+            console.log(error.message)
+        } finally {
+
+        }
+    }
+    const updateUrl = async (id, name) => {
+        try {
+            const docRef = doc(db, 'urls', id)
+            const docSnap = await getDoc(docRef)
+            if (!docSnap.exists()) {
+                throw new Error('No existe el doc')
+            }
+            if(docSnap.data().user !== auth.currentUser.uid){
+                throw new Error('Doc invalido en la secion')
+            }
+            await updateDoc(docRef,{
+                name
+            })
+            documents.value = documents.value.map(item => item.id === id ? ({...item, name: name}) : item)
+            router.push('/')
+        } catch (error) {
+            console.log(error)
+        } finally {
+
+        }
+    }
     const deleteUrl = async (id) => {
         try {
             const docRef = doc(db, 'urls', id)
@@ -74,6 +115,8 @@ export const useDatabaseStore = defineStore('database', () =>{
         loadingDoc,
         getUrls,
         addUrl,
+        readUrl,
+        updateUrl,
         deleteUrl,
         $reset
     }

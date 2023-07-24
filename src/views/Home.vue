@@ -18,6 +18,7 @@
                 {{ item.short }}
                 <br>
                 <button @click="deleteUrl(item.id)">Eliminar</button>
+                <button @click="router.push(`/edit/${item.id}`)">Editar</button>
             </li>
         </ul>
     </div>
@@ -26,11 +27,15 @@
 <script setup>
 import { useUserStore } from '../stores/user'
 import { useDatabaseStore } from "../stores/database"
-import { storeToRefs } from 'pinia';
-import { ref } from 'vue';
+import { storeToRefs } from 'pinia'
+import { ref } from 'vue'
+import { useRouter } from "vue-router";
+
+const router = useRouter()
 
 const useUser = useUserStore()
 const { userData } = useUser
+
 const useDB = useDatabaseStore()
 const { documents, loadingDoc } = storeToRefs(useDB)
 const { getUrls, addUrl, deleteUrl } = useDB
