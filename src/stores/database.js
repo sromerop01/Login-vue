@@ -1,4 +1,4 @@
-import { addDoc, collection, getDocs, query, where } from "firebase/firestore/lite";
+import { addDoc, collection, deleteDoc, doc, getDoc, getDocs, query, where } from "firebase/firestore/lite";
 import { defineStore } from "pinia";
 import { ref } from "vue";
 import { auth, db } from "../firebaseConfig";
@@ -17,7 +17,6 @@ export const useDatabaseStore = defineStore('database', () =>{
             const q = query(collection(db, 'urls'), where('user', '==', auth.currentUser.uid))
             const querySnapshot = await getDocs(q)
             querySnapshot.forEach(doc => {
-                console.log(doc.id, doc.data())
                 documents.value.push({
                     id: doc.id,
                     ...doc.data()
@@ -47,7 +46,24 @@ export const useDatabaseStore = defineStore('database', () =>{
 
         }
     }
+    const deleteUrl = async (id) => {
+        try {
+            const docRef = doc(db, 'urls', id)
+            const docSnap = await getDoc(docRef)
+            if (!docSnap.exists()) {
+                throw new Error('No existe el doc')
+            }
+            if(docSnap.data().user !== auth.currentUser.uid){
+                throw new Error('Doc invalido en la secion')
+            }
+            await deleteDoc(docRef)
+            documents.value = documents.value.filter(item => item.id !== id)
+        } catch (error) {
+            console.log(error.message);
+        }finally{
 
+        }
+    }
     function $reset() {
         documents.value = []
         loadingDoc.value = false
@@ -58,6 +74,7 @@ export const useDatabaseStore = defineStore('database', () =>{
         loadingDoc,
         getUrls,
         addUrl,
+        deleteUrl,
         $reset
     }
 })

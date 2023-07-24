@@ -10,9 +10,14 @@
 
         <p v-if="loadingDoc">loading Doc...</p>
         <ul v-else>
-            <li v-for="(item, index) in documents" :key="item.id">
-                {{ item.name }} - {{ item.id }}
+            <li v-for="item in documents" :key="item.id">
+                {{ item.id }}
+                <br>
+                {{ item.name }}
+                <br>
                 {{ item.short }}
+                <br>
+                <button @click="deleteUrl(item.id)">Eliminar</button>
             </li>
         </ul>
     </div>
@@ -28,7 +33,7 @@ const useUser = useUserStore()
 const { userData } = useUser
 const useDB = useDatabaseStore()
 const { documents, loadingDoc } = storeToRefs(useDB)
-const { getUrls, addUrl } = useDB
+const { getUrls, addUrl, deleteUrl } = useDB
 
 getUrls()
 
