@@ -30,6 +30,7 @@ export const useDatabaseStore = defineStore('database', () =>{
         }
     }
     const addUrl = async (name) => {
+        loadingDoc.value = true
         try {
             const objDoc = {
                 name: name,
@@ -44,10 +45,11 @@ export const useDatabaseStore = defineStore('database', () =>{
         } catch (error) {
             console.log(error);
         } finally {
-
+            loadingDoc.value = false
         }
     }
     const readUrl = async (id) => {
+        loadingDoc.value = true
         try {
             const docRef = doc(db, 'urls', id)
             const docSnap = await getDoc(docRef)
@@ -63,10 +65,11 @@ export const useDatabaseStore = defineStore('database', () =>{
         } catch (error) {
             console.log(error.message)
         } finally {
-
+            loadingDoc.value = false
         }
     }
     const updateUrl = async (id, name) => {
+        loadingDoc.value = true
         try {
             const docRef = doc(db, 'urls', id)
             const docSnap = await getDoc(docRef)
@@ -84,10 +87,11 @@ export const useDatabaseStore = defineStore('database', () =>{
         } catch (error) {
             console.log(error)
         } finally {
-
+            loadingDoc.value = false
         }
     }
     const deleteUrl = async (id) => {
+        loadingDoc.value = true
         try {
             const docRef = doc(db, 'urls', id)
             const docSnap = await getDoc(docRef)
@@ -102,7 +106,7 @@ export const useDatabaseStore = defineStore('database', () =>{
         } catch (error) {
             console.log(error.message);
         }finally{
-
+            loadingDoc.value = false
         }
     }
     function $reset() {

@@ -10,19 +10,20 @@ const { userData } = useUser
 </script>
 
 <template>
-  <header>
-
-    <div class="wrapper">
-      <nav v-if="!useUser.loadingSession">
-        <RouterLink to="/" v-if="userData">Home</RouterLink>
-        <RouterLink to="/login" v-if="!userData">login</RouterLink>
-        <RouterLink to="/register" v-if="!userData">Register</RouterLink>
-        <button @click="logoutUser" v-if="userData">Logout</button>
+  <a-layout>
+    <a-layout-header v-if="!useUser.loadingSession">
+      <nav>
+        <RouterLink to="/" v-if="userData.email">Home</RouterLink>
+        <RouterLink to="/login" v-if="!userData.email">login</RouterLink>
+        <RouterLink to="/register" v-if="!userData.email">Register</RouterLink>
+        <button @click="logoutUser" v-if="userData.email">Logout</button>
       </nav>
-      <div v-else>
+    </a-layout-header>
+    <a-layout-content v-if="useUser.loadingSession">
+      <div>
         Loading User...
       </div>
-    </div>
-  </header>
-  <RouterView />
+    </a-layout-content>
+    <RouterView />
+  </a-layout>
 </template>

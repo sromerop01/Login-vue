@@ -7,10 +7,7 @@ import { useDatabaseStore } from "./database";
 
 export const useUserStore = defineStore('user', () =>{
     const router = useRouter()
-    const userData = reactive({
-        email: null,
-        uid:null
-    })
+    const userData = reactive({})
     const loadingUser = ref(false)
     const loadingSession = ref(false)
     
@@ -18,9 +15,8 @@ export const useUserStore = defineStore('user', () =>{
         loadingUser.value = true
         try {
             const {user} = await createUserWithEmailAndPassword(auth, email, password)
-            userData.value= {email:user.email, uid:user.uid}
-            // userData.email = user.email
-            // userData.uid = user.uid
+            userData.email = user.email
+            userData.uid = user.uid
             router.push('/')
         } catch (error) {
             console.log(error)
@@ -32,10 +28,9 @@ export const useUserStore = defineStore('user', () =>{
     const loginUser = async (email, password) => {
         loadingUser.value = true
         try {
-            const {user} = await signInWithEmailAndPassword(auth, email, password)
-            userData.value= {email:user.email, uid:user.uid}
-            // userData.email = user.email
-            // userData.uid = user.uid
+            const { user } = await signInWithEmailAndPassword(auth, email, password)
+            userData.email = user.email
+            userData.uid = user.uid
             router.push('/')
         } catch (error) {
             console.log(error)
@@ -49,7 +44,8 @@ export const useUserStore = defineStore('user', () =>{
         useDB.$reset()
         try {
             await signOut(auth)
-            userData.value= null
+            userData.email = null
+            userData.uid = null
             router.push('/login')
         } catch (error) {
             console.log(error)
@@ -59,9 +55,11 @@ export const useUserStore = defineStore('user', () =>{
         return new Promise((resolve, reject) => {
            const unsubcribe = onAuthStateChanged(auth, user =>{
                 if (user) {
-                    userData.value= {email:user.email, uid:user.uid}
+                    userData.email = user.email
+                    userData.uid = user.uid
                 }else {
-                    userData.value = null
+                    userData.email = user.email
+                    userData.uid = user.uid
                     const useDB = useDatabaseStore()
                     useDB.$reset()
                 }

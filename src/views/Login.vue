@@ -23,15 +23,15 @@ const { loginUser } = useUser
     const email = ref('')
     const password = ref('')
 
-    const handleSubmit = async () => {
-        try {
-            if(!email.value || password.value.length < 6 ){
+const handleSubmit = async () => {
+    try {
+        if(!email.value || password.value.length < 6 ){
             return alert('Llena los campos')
-            }
-            await loginUser(email.value, password.value)
-            //router.push('/')
-        } catch (error) {
-           console.log(error) 
         }
+        await loginUser(email.value, password.value)
+        //router.push('/')
+    } catch (error) {
+        console.log(error) 
     }
+}
 </script>

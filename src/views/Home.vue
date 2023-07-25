@@ -2,7 +2,6 @@
     <div>
         <h1>Home</h1>
         <p>{{userData?.email}}</p>
-
         <form @submit.prevent="handleSubmit">
             <input type="text" placeholder="Ingrese URL" v-model="url">
             <button type="submit">Agregar</button>
